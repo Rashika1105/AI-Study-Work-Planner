@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <h2 class="text-white"><i class="fas fa-chart-line text-primary me-3"></i>Performance Analytics</h2>
+    <div class="d-flex gap-3">
+        <a href="{{ url_for('download_report') }}" class="btn btn-primary animate-pulse-orange">
+            <i class="fas fa-download me-2"></i>Export PDF Report
+        </a>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-8">
+        <div class="glass-card p-4 h-100">
+            <h5 class="mb-4 text-primary">Weekly Productivity Trend</h5>
+            <div id="productivity-chart" style="height: 400px;"></div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card p-4 h-100">
+            <h5 class="mb-4 text-primary">Task Distribution</h5>
+            <div id="category-chart" style="height: 400px;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="glass-card p-4 text-center animate-float">
+            <div class="display-6 text-primary mb-2">{{ avg_hours }}h</div>
+            <h6 class="text-muted text-uppercase small ls-1">Daily Avg Hours</h6>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card p-4 text-center animate-float" style="animation-delay: 0.2s;">
+            <div class="display-6 text-success mb-2">{{ completion_rate }}%</div>
+            <h6 class="text-muted text-uppercase small ls-1">Completion Rate</h6>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card p-4 text-center animate-float" style="animation-delay: 0.4s;">
+            <div class="display-6 text-info mb-2">{{ deadlines_met }}</div>
+            <h6 class="text-muted text-uppercase small ls-1">Deadlines Met</h6>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ls-1 {
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    const themeColor = '#ff6a00';
+    const secondaryColor = '#ff3d00';
+
+    // Sample data logic (in a real app, this would be dynamic)
+    const productivityData = {
+        x: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        y: [4, 6, 5, 8, 7, 3, 4],
+        type: 'scatter',
+        mode: 'lines+markers',
+        line: { color: themeColor, width: 4, shape: 'spline' },
+        marker: { size: 10, color: themeColor, bordercolor: '#fff', borderwidth: 2 },
+        fill: 'tozeroy',
+        fillcolor: 'rgba(255, 106, 0, 0.1)'
+    };
+
+    const categoryData = [{
+        values: [15, 10],
+        labels: ['Study', 'Work'],
+        type: 'pie',
+        hole: .6,
+        marker: {
+            colors: [themeColor, secondaryColor],
+            line: { color: '#000', width: 2 }
+        },
+        textinfo: 'label+percent',
+        insidetextorientation: 'radial'
+    }];
+
+    const layout = {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#94a3b8', family: 'Outfit' },
+        margin: { t: 20, b: 40, l: 40, r: 20 },
+        showlegend: false,
+        xaxis: { gridcolor: 'rgba(255,106,0,0.05)', zeroline: false },
+        yaxis: { gridcolor: 'rgba(255,106,0,0.05)', zeroline: false }
+    };
+
+    Plotly.newPlot('productivity-chart', [productivityData], layout);
+    Plotly.newPlot('category-chart', categoryData, layout);
+</script>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4 mb-5">
+    <!-- Quick Stats -->
+    <div class="col-md-3">
+        <div class="glass-card p-4 text-center animate-float">
+            <h6 class="text-muted">Total Tasks</h6>
+            <h2 class="mb-0 text-primary">{{ tasks_count }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 text-center animate-float" style="animation-delay: 0.2s;">
+            <h6 class="text-muted">Completed</h6>
+            <h2 class="mb-0 text-success">{{ completed_count }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 text-center animate-pulse-orange" style="border: 2px solid var(--primary-color);">
+            <h6 class="text-muted">Predicted Score</h6>
+            <h2 class="mb-0 text-primary">{{ pred_score }}%</h2>
+            <small class="text-muted">Confidence: {{ confidence }}%</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 text-center animate-float" style="animation-delay: 0.4s;">
+            <h6 class="text-muted">Burnout Risk</h6>
+            <h2
+                class="mb-0 {% if burnout_risk == 'High' %}text-danger{% elif burnout_risk == 'Medium' %}text-warning{% else %}text-info{% endif %}">
+                {{ burnout_risk }}
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Suggestions Panel -->
+    <div class="col-md-8">
+        <div class="glass-card p-4 h-100">
+            <h4 class="mb-4 text-primary"><i class="fas fa-lightbulb text-warning me-2"></i>AI Suggestions</h4>
+            <div class="list-group list-group-flush">
+                {% for suggestion in suggestions %}
+                <div class="list-group-item bg-transparent border-0 px-0 mb-3 hover-lift">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-arrow-right text-primary me-3"></i>
+                        <span class="fs-5">{{ suggestion }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if burnout_risk != 'Low' %}
+            <div class="alert alert-warning mt-4 glass-card animate-pulse-orange">
+                <i class="fas fa-exclamation-triangle me-2"></i> {{ burnout_msg }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-md-4">
+        <div class="glass-card p-4 mb-4">
+            <h4 class="mb-4 text-primary">Quick Actions</h4>
+            <a href="{{ url_for('tasks') }}" class="btn btn-primary w-100 mb-3 animate-pulse-orange">
+                <i class="fas fa-plus me-2"></i> Add New Task
+            </a>
+            <a href="{{ url_for('analytics') }}" class="btn btn-outline-secondary w-100 glass-card">
+                <i class="fas fa-chart-pie me-2"></i> View Analytics
+            </a>
+        </div>
+
+        <div class="glass-card p-4">
+            <h5 class="text-muted mb-3">Daily Motivation</h5>
+            <p class="fst-italic mb-0 text-primary">"The secret of getting ahead is getting started."</p>
+            <small class="text-muted">- Mark Twain</small>
+        </div>
+    </div>
+</div>
+{% endblock %}
